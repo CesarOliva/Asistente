@@ -262,7 +262,6 @@ def run_sarahi():
                         sub.Popen(programs[task])
             else:
                 text = "Aun no se ha agregado esta aplicación o página\nUsa los botones para agregar"
-                print(task)
                 filename = "not_added.mp3"
                 print(text)
                 talk(text, filename)
