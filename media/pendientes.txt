@@ -1,0 +1,6 @@
+Errores a corregir:
+
+Error al reproducir audios (PermissionError: [Errno 13] Permission denied:)
+Error con las alarmas (Kill thread)
+Error con las alarmas (Al empalmar dos alarmas. No suena ninguna)
+Kill terminal

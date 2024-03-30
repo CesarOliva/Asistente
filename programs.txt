@@ -1,0 +1,2 @@
+spotify,spotify
+fotos,start microsoft.windows.camera:
