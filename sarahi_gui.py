@@ -27,19 +27,23 @@ listener = sr.Recognizer()
 
 main_window = Tk()
 main_window.title("Sarahí Assistent")
-main_window.geometry("900x450")
+width = 900 
+height = 450
+x_window = main_window.winfo_screenwidth()//2 - (width//2)
+y_window = main_window.winfo_screenheight()//2 - (height//2)
+main_window.geometry(f"{width}x{height}+{x_window}+{y_window}")
 main_window.resizable(0,0)
-main_window.configure(bg="#00B4DB")
+main_window.configure(bg="#85C1E9")
 
-label_title = Label(main_window, text="Sarahí", fg="#2E3534", bg="#00B4DB",
-                    font=("Poppins", "28", "bold"))
+label_title = Label(main_window, text="Sarahí Assistant", fg="#212F3D", bg="#85C1E9",
+                    font=("Lato", 26))
 label_title.pack(pady=10)
 
-canvas = Canvas(bg="#6DD5ED", height="230", width="200")
+canvas = Canvas(bg="#5DADE2", height="230", width="200")
 canvas.place(y=0, x=0)
-canvas.create_text(75, 80, text=comandos, fill="#434343", font="Arial 10")
+canvas.create_text(75, 80, text=comandos, fill="#212F3D", font="Lato 11")
 
-text_info = Text(main_window, bg="#00B4DB", fg="#434343")
+text_info = Text(main_window, bg="#5499C7", fg="#000", font="Lato 10")
 text_info.place(x=0, y=230, height=230, width=204)
 
 photo = ImageTk.PhotoImage(Image.open("media/Sarahi.jpg"))
@@ -112,25 +116,68 @@ def write(f):
     sub.Popen('media\pendientes.txt', shell=True)
 
 def open_w_pages():
+    window_apps = Toplevel()
+    window_apps.title("Acciones Páginas")
+    window_apps.configure(bg="#FAD7A0")
+    window_apps.geometry("300x200")
+    window_apps.resizable(0, 0)
+    main_window.eval(f'tk::PlaceWindow {str(window_apps)} center')
+
+    title_label = Label(window_apps, text="Páginas", fg="white", bg="#FAD7A0",
+                        font=("Consolas", "15", "bold"))
+    title_label.pack(pady=5)
+
+    button_add = Button(window_apps, text="Ver lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_list_pages)
+    button_add.pack(pady=4)
+    button_add = Button(window_apps, text="Agregar Páginas", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_add_pages)
+    button_add.pack(pady=4)
+    button_add = Button(window_apps, text="Eliminar lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=delete_pages)
+    button_add.pack(pady=4)
+
+def window_list_pages():
+    global text_info_wlpages
+    wlpages = Toplevel()
+    wlpages.title("Lista Programas")
+    wlpages.configure(bg="#434343")
+    wlpages.geometry("200x200")
+    wlpages.resizable(0, 0)
+    main_window.eval(f'tk::PlaceWindow {str(wlpages)} center')
+    text_info_wlpages = Text(wlpages, bg="#434343", fg="#fff", font="Lato 11")
+    text_info_wlpages.place(x=0, y=0, height=200, width=200)
+
+def open_list_pages():
+    try:
+        with open('pages.txt', 'r') as file:
+            window_list_pages()
+            content = file.read()
+            text_info_wlpages.insert(INSERT, content)
+
+    except FileNotFoundError as e:
+        file = open("pages.txt", 'w')
+
+def open_add_pages():
     global namepage_entry, pathpage_entry
     window_pages = Toplevel()
-    window_pages.title("Agrega Paginas")
+    window_pages.title("Agregar paginas")
     window_pages.configure(bg="#434343")
     window_pages.geometry("300x200")
-    window_pages.resizable(0, 0)
+    window_pages.resizable(0,0)
     main_window.eval(f'tk::PlaceWindow {str(window_pages)} center')
 
-    title_label = Label(window_pages, text="Agrega una pagina", fg="white", bg="#434343",
+    title_label = Label(window_pages, text="Agrega una página", fg="white", bg="#434343",
                         font=("Arial", "15", "bold"))
     title_label.pack(pady=3)
-
-    name_label = Label(window_pages, text="Nombre de la pagina", fg="white", bg="#434343",
+    
+    name_label = Label(window_pages, text="Nombre de la página", fg="white", bg="#434343",
                         font=("Arial", "10"))
     name_label.pack(pady=2)
     namepage_entry = Entry(window_pages, width=20)
     namepage_entry.pack(pady=1)
 
-    path_label = Label(window_pages, text="Liga de la pagina", fg="white", bg="#434343",
+    path_label = Label(window_pages, text="URL de la página", fg="white", bg="#434343",
                         font=("Arial", "10"))
     path_label.pack(pady=2)
     pathpage_entry = Entry(window_pages, width=25)
@@ -147,10 +194,56 @@ def add_pages():
     namepage_entry.delete(0, "end")
     pathpage_entry.delete(0, "end")
 
+def delete_pages():
+    os.remove("pages.txt")
+
 def open_w_apps():
+    window_apps = Toplevel()
+    window_apps.title("Acciones Programas")
+    window_apps.configure(bg="#FAD7A0")
+    window_apps.geometry("300x200")
+    window_apps.resizable(0, 0)
+    main_window.eval(f'tk::PlaceWindow {str(window_apps)} center')
+
+    title_label = Label(window_apps, text="Programas", fg="white", bg="#FAD7A0",
+                        font=("Consolas", "15", "bold"))
+    title_label.pack(pady=5)
+
+    button_add = Button(window_apps, text="Ver lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_list_apps)
+    button_add.pack(pady=4)
+    button_add = Button(window_apps, text="Agregar Programas", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_add_apps)
+    button_add.pack(pady=4)
+    button_add = Button(window_apps, text="Eliminar lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=delete_apps)
+    button_add.pack(pady=4)
+
+def window_list_apps():
+    global text_info_wlapp
+    wlapp = Toplevel()
+    wlapp.title("Lista Programas")
+    wlapp.configure(bg="#434343")
+    wlapp.geometry("200x200")
+    wlapp.resizable(0, 0)
+    main_window.eval(f'tk::PlaceWindow {str(wlapp)} center')
+    text_info_wlapp = Text(wlapp, bg="#434343", fg="#fff", font="Lato 11")
+    text_info_wlapp.place(x=0, y=0, height=200, width=200)
+
+def open_list_apps():
+    try:
+        with open('programs.txt', 'r') as file:
+            window_list_apps()
+            content = file.read()
+            text_info_wlapp.insert(INSERT, content)
+
+    except FileNotFoundError as e:
+        file = open("programs.txt", 'w')
+
+def open_add_apps():
     global nameapp_entry, pathapp_entry
     window_apps = Toplevel()
-    window_apps.title("Agrega Paginas")
+    window_apps.title("Agregar Programas")
     window_apps.configure(bg="#434343")
     window_apps.geometry("300x200")
     window_apps.resizable(0, 0)
@@ -174,6 +267,9 @@ def open_w_apps():
 
     save_button = Button(window_apps, text="Guardar", bg="#16222A", fg="white", width=8, height=1, command=add_apps)
     save_button.pack(pady=4)
+
+def delete_apps():
+    os.remove("programs.txt")
 
 def add_apps():
     name_app = nameapp_entry.get().strip()
@@ -276,7 +372,7 @@ def run_sarahi():
 
         elif 'termina' in rec:
             print("Cerrando...")
-            text = "Adíos"
+            text = "Adiós"
             filename="bye.mp3"
             talk(text, filename)
             break
@@ -289,12 +385,12 @@ button_speak = Button(main_window, text="Hablar", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=read_and_talk)
 button_speak.place(x=720, y=100, width=120, height=30)
 
-button_add_pages = Button(main_window, text="Agregar páginas", fg="white", bg="#149FE0",
+button_pages = Button(main_window, text="Páginas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_pages)
-button_add_pages.place(x=720, y=150, width=120, height=30)
+button_pages.place(x=720, y=150, width=120, height=30)
 
-button_add_apps = Button(main_window, text="Agregar apps", fg="white", bg="#149FE0",
+button_apps = Button(main_window, text="Programas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_apps)
-button_add_apps.place(x=720, y=200, width=120, height=30)
+button_apps.place(x=720, y=200, width=120, height=30)
 
 main_window.mainloop()
