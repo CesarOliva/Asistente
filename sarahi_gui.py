@@ -22,6 +22,8 @@ comandos = """
             - Termina
 """
 
+
+
 name = "sarahí"
 listener = sr.Recognizer()
 
@@ -50,71 +52,6 @@ photo = ImageTk.PhotoImage(Image.open("media/Sarahi.jpg"))
 window_photo = Label(main_window, image=photo)
 window_photo.pack(pady=5)
 
-def listen():
-    listener = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Escuchando")
-        pc = listener.listen(source)
-    try:
-        rec = listener.recognize_google(pc, language="es")
-        rec = rec.lower()
-    except sr.UnknownValueError:
-        print("Lo siento, no te entendí. Intenta de nuevo")    
-    if name in rec:
-        rec = rec.replace(name, '')
-    return rec
-
-def talk(text, filename):
-    playAudio = gTTS(text, lang='es')
-    filename = f"media/{filename}"
-    playAudio.save(filename)
-    playsound(filename)
-    os.remove(filename)
-
-def read_and_talk():
-    text = text_info.get("1.0", "end")
-    filename = "talk.mp3"
-    talk(text, filename)
-
-def write_text(text):
-    text_info.insert(INSERT, text)
-
-def alarm(rec):
-    time = rec.replace('alarma a las', '')
-    time = time.strip()
-    if time[0]!='0' and len(time) <5:
-        time= '0'+time
-    text = 'Alarma activada a las '+time
-    print(text)
-    filename = "alarm.mp3"
-    talk(text, filename)
-    while True:
-        if datetime.datetime.now().strftime('%H:%M') == time:
-            print('Estableciste una alarma')
-            mixer.init()
-            mixer.music.load("media/ringtone.mp3")
-            mixer.music.play()
-            if keyboard.read_key() == "s":
-                mixer.music.stop()
-                break
-        else:
-            continue
-        break
-
-def write(f):
-    text = "¿Qué quieres que escriba?"
-    filename = "WantForWrite.mp3"
-    print(text)
-    talk(text, filename)
-    rec_write = listen()
-    f.write(rec_write + os.linesep)
-    f.close()
-    text = "Listo, puedes revisarlo"
-    print(text)
-    filename = "textReady.mp3"
-    talk(text, filename)
-    sub.Popen('media\pendientes.txt', shell=True)
-
 def open_w_pages():
     window_apps = Toplevel()
     window_apps.title("Acciones Páginas")
@@ -127,8 +64,8 @@ def open_w_pages():
                         font=("Consolas", "15", "bold"))
     title_label.pack(pady=5)
 
-    button_add = Button(window_apps, text="Ver lista", fg="white", bg="#149FE0",
-                        font=('Arial', '10', 'bold'), command=open_list_pages)
+    button_add = Button(window_apps, text="Lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=talk_pages)
     button_add.pack(pady=4)
     button_add = Button(window_apps, text="Agregar Páginas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_add_pages)
@@ -137,26 +74,18 @@ def open_w_pages():
                         font=('Arial', '10', 'bold'), command=delete_pages)
     button_add.pack(pady=4)
 
-def window_list_pages():
-    global text_info_wlpages
-    wlpages = Toplevel()
-    wlpages.title("Lista Programas")
-    wlpages.configure(bg="#434343")
-    wlpages.geometry("200x200")
-    wlpages.resizable(0, 0)
-    main_window.eval(f'tk::PlaceWindow {str(wlpages)} center')
-    text_info_wlpages = Text(wlpages, bg="#434343", fg="#fff", font="Lato 11")
-    text_info_wlpages.place(x=0, y=0, height=200, width=200)
-
-def open_list_pages():
-    try:
-        with open('pages.txt', 'r') as file:
-            window_list_pages()
-            content = file.read()
-            text_info_wlpages.insert(INSERT, content)
-
-    except FileNotFoundError as e:
-        file = open("pages.txt", 'w')
+def talk_pages():
+    if bool(sites) == True:
+        text = "Has agregado las siguientes páginas"
+        filename = "added.mp3"
+        talk(text, filename)
+        for site in sites:
+            filename = "app.mp3"
+            talk(site, filename)
+    else:
+        text = "Aún no has agregado nada"
+        filename = "notyet.mp3"
+        talk(text, filename)
 
 def open_add_pages():
     global namepage_entry, pathpage_entry
@@ -209,8 +138,8 @@ def open_w_apps():
                         font=("Consolas", "15", "bold"))
     title_label.pack(pady=5)
 
-    button_add = Button(window_apps, text="Ver lista", fg="white", bg="#149FE0",
-                        font=('Arial', '10', 'bold'), command=open_list_apps)
+    button_add = Button(window_apps, text="Lista", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=talk_programs)
     button_add.pack(pady=4)
     button_add = Button(window_apps, text="Agregar Programas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_add_apps)
@@ -219,26 +148,18 @@ def open_w_apps():
                         font=('Arial', '10', 'bold'), command=delete_apps)
     button_add.pack(pady=4)
 
-def window_list_apps():
-    global text_info_wlapp
-    wlapp = Toplevel()
-    wlapp.title("Lista Programas")
-    wlapp.configure(bg="#434343")
-    wlapp.geometry("200x200")
-    wlapp.resizable(0, 0)
-    main_window.eval(f'tk::PlaceWindow {str(wlapp)} center')
-    text_info_wlapp = Text(wlapp, bg="#434343", fg="#fff", font="Lato 11")
-    text_info_wlapp.place(x=0, y=0, height=200, width=200)
-
-def open_list_apps():
-    try:
-        with open('programs.txt', 'r') as file:
-            window_list_apps()
-            content = file.read()
-            text_info_wlapp.insert(INSERT, content)
-
-    except FileNotFoundError as e:
-        file = open("programs.txt", 'w')
+def talk_programs():
+    if bool(programs) == True:
+        text = "Has agregado los siguientes programas"
+        filename = "added.mp3"
+        talk(text, filename)
+        for app in sites:
+            filename = "app.mp3"
+            talk(app, filename)
+    else:
+        text = "Aún no has agregado nada"
+        filename = "notyet.mp3"
+        talk(text, filename)
 
 def open_add_apps():
     global nameapp_entry, pathapp_entry
@@ -302,6 +223,131 @@ charge_data(sites, "pages.txt")
 programs=dict()
 charge_data(programs, "programs.txt")
 
+
+def listen():
+    listener = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Escuchando")
+        pc = listener.listen(source)
+    try:
+        rec = listener.recognize_google(pc, language="es")
+        rec = rec.lower()
+    except sr.UnknownValueError:
+        print("Lo siento, no te entendí. Intenta de nuevo")    
+    if name in rec:
+        rec = rec.replace(name, '')
+    return rec
+
+def talk(text, filename):
+    playAudio = gTTS(text, lang='es')
+    filename = f"media/{filename}"
+    playAudio.save(filename)
+    playsound(filename)
+    os.remove(filename)
+
+def read_and_talk():
+    text = text_info.get("1.0", "end")
+    filename = "talk.mp3"
+    talk(text, filename)
+
+def write_text(text):
+    text_info.insert(INSERT, text)
+
+def write(f):
+    text = "¿Qué quieres que escriba?"
+    filename = "WantForWrite.mp3"
+    talk(text, filename)
+    rec_write = listen()
+    f.write(rec_write + os.linesep)
+    f.close()
+    text = "Listo, puedes revisarlo"
+    filename = "textReady.mp3"
+    talk(text, filename)
+    sub.Popen('media\pendientes.txt', shell=True)
+
+def clock(rec):
+    time = rec.replace('alarma a las', '')
+    time = time.strip()
+    if time[0]!='0' and len(time) <5:
+        time= '0'+time
+    text = 'Alarma activada a las '+time
+    print(text)
+    filename = "alarm.mp3"
+    talk(text, filename)
+    while True:
+        if datetime.datetime.now().strftime('%H:%M') == time:
+            print('Estableciste una alarma')
+            mixer.init()
+            mixer.music.load("media/ringtone.mp3")
+            mixer.music.play()
+            if keyboard.read_key() == "s":
+                mixer.music.stop()
+                break
+        else:
+            continue
+        break
+
+
+def reproduce(rec):
+    music = rec.replace("reproduce", '')
+    text = "Reproduciendo"+music
+    filename = "play.mp3"
+    talk(text, filename)
+    pywhatkit.playonyt(music)
+
+def busca(rec):
+    search = rec.replace("busca", '')
+    wikipedia.set_lang("es")
+    text = wikipedia.summary(search, 1)
+    filename = "search.mp3"
+    talk(text, filename)
+    write_text(text)
+
+def abre(rec):
+    task = rec.replace('abre', '').strip()
+    if task in sites:
+        for task in sites:
+            if task in rec:
+                text = f"Abriendo {task}"
+                filename = "opening.mp3"
+                talk(text, filename)
+                sub.call(f'start chrome {sites[task]}', shell=True)
+    elif task in programs:
+        for task in programs:
+            if task in rec:
+                text = f"Abriendo {task}"
+                filename = "opening.mp3"
+                talk(text, filename)
+                sub.Popen(programs[task])
+    else:
+        text = "Aun no se ha agregado esta aplicación o página\nUsa los botones para agregar"
+        filename = "not_added.mp3"
+        talk(text, filename)
+
+def escribe():
+    try:
+        with open('media/pendientes.txt', 'a') as f:
+            write(f)
+    except FileNotFoundError as e:
+        file = open('media/pendientes.txt', 'w')
+        write(file)
+
+def func_alarma(rec):
+    thread = tr.Thread(target=clock, args=(rec,))
+    thread.start()
+
+def stop_alarma(rec):
+    mixer.music.stop()
+
+key_words = {
+    'reproduce': reproduce,
+    'busca': busca,
+    'alarma': func_alarma,
+    'detente': stop_alarma,
+    'abre': abre,
+    'escribe': escribe
+}
+
 def run_sarahi():
     text = "Hola César, Bienvenido"
     filename = "initiating.mp3"
@@ -312,70 +358,22 @@ def run_sarahi():
         except UnboundLocalError:
             print("Lo siento, no te entendí. Intenta de nuevo")
             continue
-
-        if 'reproduce' in rec:
-            music = rec.replace("reproduce", '')
-            text = "Reproduciendo"+music
-            filename = "play.mp3"
-            print(text)
-            talk(text, filename)
-            pywhatkit.playonyt(music)
-        
-        elif 'busca' in rec:
-            search = rec.replace("busca", '')
-            wikipedia.set_lang("es")
-            text = wikipedia.summary(search, 1)
-            print(search+":\n"+text)
-            filename = "search.mp3"
-            talk(text, filename)
-            write_text(text)
+    
+        if 'busca' in rec:
+            key_words['busca'](rec)
             break
-        
-        elif 'alarma' in rec:
-            thread = tr.Thread(target=alarm, args=(rec,))
-            thread.start()
-        elif 'detente' in rec:
-            mixer.music.stop()
-            print('Alarma detenida')
-
-        elif 'abre' in rec:
-            task = rec.replace('abre', '').strip()
-            if task in sites:
-                for task in sites:
-                    if task in rec:
-                        text = f"Abriendo {task}"
-                        filename = "opening.mp3"
-                        print(text)
-                        talk(text, filename)
-                        sub.call(f'start chrome {sites[task]}', shell=True)
-            elif task in programs:
-                for task in programs:
-                    if task in rec:
-                        text = f"Abriendo {task}"
-                        filename = "opening.mp3"
-                        print(text)
-                        talk(text, filename)
-                        sub.Popen(programs[task])
-            else:
-                text = "Aun no se ha agregado esta aplicación o página\nUsa los botones para agregar"
-                filename = "not_added.mp3"
-                print(text)
-                talk(text, filename)
-
-        elif 'escribe' in rec:
-            try:
-                with open('media/pendientes.txt', 'a') as f:
-                    write(f)
-            except FileNotFoundError as e:
-                file = open('media/pendientes.txt', 'w')
-                write(file)
-
-        elif 'termina' in rec:
-            print("Cerrando...")
+        else:
+            for word in key_words:
+                if word in rec:
+                    key_words[word](rec)
+                    
+        if 'termina' in rec:
             text = "Adiós"
             filename="bye.mp3"
             talk(text, filename)
-            break
+            break        
+
+    main_window.update()
 
 button_listen = Button(main_window, text="Escuchar", fg="white", bg="#149FE0",
                        font=('Arial', '15', 'bold'), command=run_sarahi)
