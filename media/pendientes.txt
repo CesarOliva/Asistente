@@ -2,8 +2,13 @@ Errores a corregir:
 
 Error con las alarmas (Kill thread)
 Error con las alarmas (Al empalmar dos alarmas. No suena ninguna)
-Kill terminal
-problema con las rutas de los archivos de texto
-ideas a implementar
-implementar chat gpt
-implementar traductorleer qr
+Problema con las rutas de los archivos de texto
+
+
+Ideas a implementar:
+
+Implementar chatGPT
+Implementar traductor
+Leer qr
+Consulta temperatura
+Recordatorios google calendar

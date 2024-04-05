@@ -19,14 +19,14 @@ comandos = """
             Comandos que puedes usar:
             - Reproduce (cancion)
             - Busca (algo)
+            - Google (algo)
             - Abre (pagina web o app)
             - Alarma a las (hora en 24H)
             - Escribe (nota)
             - Mensaje (contacto)
             - Termina
+            - Cierrate
 """
-
-
 
 name = "sarahí"
 listener = sr.Recognizer()
@@ -47,7 +47,7 @@ label_title.pack(pady=10)
 
 canvas = Canvas(bg="#5DADE2", height="230", width="200")
 canvas.place(y=0, x=0)
-canvas.create_text(75, 80, text=comandos, fill="#212F3D", font="Lato 11")
+canvas.create_text(75, 100, text=comandos, fill="#212F3D", font="Lato 11")
 
 text_info = Text(main_window, bg="#5499C7", fg="#000", font="Lato 10")
 text_info.place(x=0, y=230, height=230, width=204)
@@ -374,13 +374,24 @@ def reproduce(rec):
     talk(text, filename)
     pywhatkit.playonyt(music)
 
-def busca(rec):
+def busca_Wikipedia(rec):
     search = rec.replace("busca", '')
     wikipedia.set_lang("es")
     text = wikipedia.summary(search, 1)
     filename = "search.mp3"
     talk(text, filename)
     write_text(text)
+
+def busca_Google(rec):
+    text = "¿Qué quieres buscar?"
+    name = "search.mp3"
+    talk(text, name)
+    search = listen()
+    sub.call('start chrome google.com', shell=True)
+    time.sleep(3)
+    at.write(search)
+    time.sleep(1)
+    at.press('enter')
 
 def abre(rec):
     task = rec.replace('abre', '').strip()
@@ -426,6 +437,13 @@ def enviar_mensaje(rec):
         filename = "not_added.mp3"
         talk(text, filename)
 
+def escribe(rec):
+    try:
+        with open('media/pendientes.txt', 'a') as f:
+            write(f)
+    except FileNotFoundError as e:
+        file = open('media/pendientes.txt', 'w')
+        write(file)
 
 def func_alarma(rec):
     thread = tr.Thread(target=clock, args=(rec,))
@@ -434,24 +452,15 @@ def func_alarma(rec):
 def stop_alarma(rec):
     mixer.music.stop()
 
-def cierra(rec):
-    # for program in programs:
-    #     kill_program = programs[program].split('\\')
-    #     kill_program = kill_program[-1]
-    #     if program in rec:
-    #         text = ""
-    #         filename = ""
-    #         talk(text, filename)
-    pass
-
 key_words = {
     'reproduce': reproduce,
-    'busca': busca,
+    'busca': busca_Wikipedia,
+    'google': busca_Google,
     'alarma': func_alarma,
     'detente': stop_alarma,
     'abre': abre,
-    'mensaje': enviar_mensaje,
-    'cierra': cierra
+    'escribe': escribe,
+    'mensaje': enviar_mensaje
 }
 
 def run_sarahi():
@@ -468,23 +477,21 @@ def run_sarahi():
         if 'busca' in rec:
             key_words['busca'](rec)
             break
-        elif 'escribe' in rec:
-            try:
-                with open('media/pendientes.txt', 'a') as f:
-                    write(f)
-            except FileNotFoundError as e:
-                file = open('media/pendientes.txt', 'w')
-                write(file)
+        elif 'termina' in rec:
+            text = "Adiós"
+            filename="bye.mp3"
+            talk(text, filename)
+            break
+        elif 'ciérrate' in rec:
+            text = "Adiós"
+            filename="bye.mp3"
+            talk(text, filename)
+            sub.call('TASKKILL /IM python3.8.exe /F')
         else:
             for word in key_words:
                 if word in rec:
                     key_words[word](rec)
                     
-        if 'termina' in rec:
-            text = "Adiós"
-            filename="bye.mp3"
-            talk(text, filename)
-            break        
 
     main_window.update()
 
