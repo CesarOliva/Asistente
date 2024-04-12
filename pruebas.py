@@ -15,12 +15,22 @@
 # print('thread killed')
 
 
-import pyautogui as at
-import subprocess as sub
-import time
+from googletrans import Translator
+import requests
 
-sub.call('start chrome "google.com tabla liga mx"', shell=True)
-time.sleep(3)
-at.write("Tabla Liga MX")
-time.sleep(1)
-at.press('enter')
+translator = Translator()
+text ="안녕하세요"
+print(translator.translate(text, dest='es').text)
+
+city = "Monterrey"
+url = f'https://es.wttr.in/{city}?format=j1'
+res = requests.get(url)
+weather_dic = res.json()
+
+temp = weather_dic["current_condition"][0]["temp_C"]
+desc_temp = weather_dic["current_condition"][0]["lang_es"][0]["value"]
+max_temp = weather_dic["weather"][0]["maxtempC"]
+min_temp = weather_dic["weather"][0]["mintempC"]
+
+print(f"La temperatura actual es de {temp}°C")
+print(f"{desc_temp} con temperaturas maximas de {max_temp}°C y minimas de {min_temp}°C")

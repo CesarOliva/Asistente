@@ -8,7 +8,6 @@ Problema con las rutas de los archivos de texto
 Ideas a implementar:
 
 Implementar chatGPT
-Implementar traductor
 Leer qr
-Consulta temperatura
 Recordatorios google calendar
+Google maps

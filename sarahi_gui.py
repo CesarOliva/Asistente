@@ -14,6 +14,8 @@ from PIL import Image, ImageTk
 import pyautogui as at
 import webbrowser
 import time
+import requests
+from googletrans import Translator
 
 comandos = """
             Comandos que puedes usar:
@@ -24,6 +26,7 @@ comandos = """
             - Alarma a las (hora en 24H)
             - Escribe (nota)
             - Mensaje (contacto)
+            - Clima
             - Termina
             - Cierrate
 """
@@ -32,7 +35,7 @@ name = "sarahí"
 listener = sr.Recognizer()
 
 main_window = Tk()
-main_window.title("Sarahí Assistent")
+main_window.title("Virtual Assistent")
 width = 900 
 height = 450
 x_window = main_window.winfo_screenwidth()//2 - (width//2)
@@ -52,7 +55,7 @@ canvas.create_text(75, 100, text=comandos, fill="#212F3D", font="Lato 11")
 text_info = Text(main_window, bg="#5499C7", fg="#000", font="Lato 10")
 text_info.place(x=0, y=230, height=230, width=204)
 
-photo = ImageTk.PhotoImage(Image.open("media/Sarahi.jpg"))
+photo = ImageTk.PhotoImage(Image.open("media/foto.png"))
 window_photo = Label(main_window, image=photo)
 window_photo.pack(pady=5)
 
@@ -329,6 +332,13 @@ def read_and_talk():
     filename = "talk.mp3"
     talk(text, filename)
 
+def traducir():
+    text = text_info.get("1.0", "end")
+    translator = Translator()
+    trans = translator.translate(text, dest="es").text
+    filename = "translated.mp3"
+    talk(trans, filename)
+
 def write_text(text):
     text_info.insert(INSERT, text)
 
@@ -414,6 +424,18 @@ def abre(rec):
         filename = "not_added.mp3"
         talk(text, filename)
 
+def clima(rec):
+    res = requests.get('https://es.wttr.in/Monterrey?format=j1')
+    weather_dic = res.json()
+    temp = weather_dic["current_condition"][0]["temp_C"]
+    desc_temp = weather_dic["current_condition"][0]["lang_es"][0]["value"]
+    max_temp = weather_dic["weather"][0]["maxtempC"]
+    min_temp = weather_dic["weather"][0]["mintempC"]
+
+    text=f"La temperatura actual es de {temp}°C\n Clima {desc_temp} con temperaturas máximas de {max_temp}°C y mínimas de {min_temp}°C"
+    filename = "clima.mp3"
+    talk(text, filename)
+
 def enviar_mensaje(rec):
     text = "¿A quién se enviará el mensaje?"
     filename = "message.mp3"
@@ -460,7 +482,8 @@ key_words = {
     'detente': stop_alarma,
     'abre': abre,
     'escribe': escribe,
-    'mensaje': enviar_mensaje
+    'mensaje': enviar_mensaje,
+    'clima': clima,
 }
 
 def run_sarahi():
@@ -501,18 +524,22 @@ button_listen.pack(pady=10)
 
 button_speak = Button(main_window, text="Hablar", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=read_and_talk)
-button_speak.place(x=720, y=100, width=120, height=30)
+button_speak.place(x=720, y=70, width=120, height=30)
+
+button_speak = Button(main_window, text="Traducir", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=traducir)
+button_speak.place(x=720, y=120, width=120, height=30)
 
 button_pages = Button(main_window, text="Páginas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_pages)
-button_pages.place(x=720, y=150, width=120, height=30)
+button_pages.place(x=720, y=170, width=120, height=30)
 
 button_apps = Button(main_window, text="Programas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_apps)
-button_apps.place(x=720, y=200, width=120, height=30)
+button_apps.place(x=720, y=220, width=120, height=30)
 
 button_apps = Button(main_window, text="Contactos", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_contacts)
-button_apps.place(x=720, y=250, width=120, height=30)
+button_apps.place(x=720, y=270, width=120, height=30)
 
 main_window.mainloop()
