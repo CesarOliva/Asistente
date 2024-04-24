@@ -16,6 +16,7 @@ import webbrowser
 import time
 import requests
 from googletrans import Translator
+import QR
 
 comandos = """
             Comandos que puedes usar:
@@ -44,7 +45,7 @@ main_window.geometry(f"{width}x{height}+{x_window}+{y_window}")
 main_window.resizable(0,0)
 main_window.configure(bg="#85C1E9")
 
-label_title = Label(main_window, text="Sarahí Assistant", fg="#212F3D", bg="#85C1E9",
+label_title = Label(main_window, text="Virtual Assistent", fg="#212F3D", bg="#85C1E9",
                     font=("Lato", 26))
 label_title.pack(pady=10)
 
@@ -518,9 +519,10 @@ def run_sarahi():
 
     main_window.update()
 
-button_listen = Button(main_window, text="Escuchar", fg="white", bg="#149FE0",
+button_listen = Button(main_window, text="Escuchar", fg="white", bg="#5499C7",
                        font=('Arial', '15', 'bold'), command=run_sarahi)
 button_listen.pack(pady=10)
+button_listen.configure(width=13, height=1)
 
 button_speak = Button(main_window, text="Hablar", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=read_and_talk)
@@ -541,5 +543,17 @@ button_apps.place(x=720, y=220, width=120, height=30)
 button_apps = Button(main_window, text="Contactos", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_contacts)
 button_apps.place(x=720, y=270, width=120, height=30)
+
+button_QR = Button(main_window, text="Calendario", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_w_contacts)
+button_QR.place(x=240, y=380, width=120, height=30)
+
+button_calendar = Button(main_window, text="Leer QR", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=QR.QR)
+button_calendar.place(x=390, y=380, width=120, height=30)
+
+button_maps = Button(main_window, text="Ruleta", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=open_w_contacts)
+button_maps.place(x=540, y=380, width=120, height=30)
 
 main_window.mainloop()
