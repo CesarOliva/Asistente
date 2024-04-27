@@ -10,4 +10,10 @@ Ideas a implementar:
 Implementar chatGPT
 Leer qr
 Recordatorios google calendar
-Google maps
+
+TERMINAR GOOGLE CALENDAR:
+    VERIFICAR QUE LA FECHA SEA CORRECTA
+        HACER DICCIONARIO CON EL NUMERO DE DIAS DE CADA MES
+        QUE EL MES EXISTA
+        QUE EL DIA EXISTA
+        QUE EL DIA SEA MAYOR QUE LA FECHA PUESTA!!
