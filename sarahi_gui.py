@@ -17,6 +17,7 @@ import time
 import requests
 from googletrans import Translator
 import QR
+from GCalendar import create_event
 
 comandos = """
             Comandos que puedes usar:
@@ -475,6 +476,9 @@ def func_alarma(rec):
 def stop_alarma(rec):
     mixer.music.stop()
 
+def close():
+    main_window.quit()
+
 key_words = {
     'reproduce': reproduce,
     'busca': busca_Wikipedia,
@@ -528,9 +532,9 @@ button_speak = Button(main_window, text="Hablar", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=read_and_talk)
 button_speak.place(x=720, y=70, width=120, height=30)
 
-button_speak = Button(main_window, text="Traducir", fg="white", bg="#149FE0",
+button_translate = Button(main_window, text="Traducir", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=traducir)
-button_speak.place(x=720, y=120, width=120, height=30)
+button_translate.place(x=720, y=120, width=120, height=30)
 
 button_pages = Button(main_window, text="Páginas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_pages)
@@ -540,20 +544,24 @@ button_apps = Button(main_window, text="Programas", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_apps)
 button_apps.place(x=720, y=220, width=120, height=30)
 
-button_apps = Button(main_window, text="Contactos", fg="white", bg="#149FE0",
+button_contacts = Button(main_window, text="Contactos", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=open_w_contacts)
-button_apps.place(x=720, y=270, width=120, height=30)
+button_contacts.place(x=720, y=270, width=120, height=30)
 
-button_QR = Button(main_window, text="Calendario", fg="white", bg="#149FE0",
-                        font=('Arial', '10', 'bold'), command=open_w_contacts)
-button_QR.place(x=240, y=380, width=120, height=30)
+button_calendar = Button(main_window, text="Calendario", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'), command=create_event.create_event)
+button_calendar.place(x=240, y=380, width=120, height=30)
 
-button_calendar = Button(main_window, text="Leer QR", fg="white", bg="#149FE0",
+button_QR = Button(main_window, text="Leer QR", fg="white", bg="#149FE0",
                         font=('Arial', '10', 'bold'), command=QR.QR)
-button_calendar.place(x=390, y=380, width=120, height=30)
+button_QR.place(x=390, y=380, width=120, height=30)
 
-button_maps = Button(main_window, text="Ruleta", fg="white", bg="#149FE0",
-                        font=('Arial', '10', 'bold'), command=open_w_contacts)
-button_maps.place(x=540, y=380, width=120, height=30)
+button_ruleta = Button(main_window, text="Ruleta", fg="white", bg="#149FE0",
+                        font=('Arial', '10', 'bold'))
+button_ruleta.place(x=540, y=380, width=120, height=30)
+
+button_quit = Button(main_window, text="Salir", fg="white", bg="#E74C3C", 
+                        font=("Arial", "10", "bold"), command=close)
+button_quit.place(x=740, y=380, width=100, height=30)
 
 main_window.mainloop()
