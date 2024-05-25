@@ -13,3 +13,9 @@
 # if input != condicion:
 #     stop_threads = True
 # print('thread killed')
+
+date = ["24", "2", "9:00"]
+hour = date[2].strip()
+if hour[0]!='0' and len(hour) <5:
+        hour= '0'+hour
+print(hour)

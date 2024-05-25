@@ -1,6 +1,7 @@
 from datetime import datetime
 from GCalendar import calendar_setup
 import time
+from GCalendar import asistent
 
 months = {
     "enero": "01",
@@ -18,35 +19,52 @@ months = {
 }
 
 def take_event_title():
-    title = input("Titulo del evento: ")
+    asistent.talk("Nombre del evento", "title.mp3")
+    title = asistent.listen()
     return title
 
-
 def take_event_description():
-    description = input("Descripción del evento: ")
+    asistent.talk("Descripción", "desc.mp3")
+    description = asistent.listen()
+    if "nada" in description:
+        description = ""
     return description
 
 def take_start_date():
-    start_date = input("¿En qué fecha y hora será el evento?")
+    asistent.talk("Fecha y hora de inicio", "start.mp3")
+    start_date = asistent.listen()
     start_date = start_date.replace(' a las ', ' de ')
     start_date = start_date.replace(' del ', ' de ')
     start_date = start_date.split(' de ')
+    hour = start_date[2].strip()
+    day = start_date[0].strip()
+    if hour[0]!='0' and len(hour) <5:
+        hour= '0'+hour
+    if day[0]!='0' and len(day)<2:
+        day='0'+day
     for month in months:
         if start_date[1] in months:
             month = months[start_date[1]]
-    new_date = f'{start_date[2]}-{month}-{start_date[0]} {start_date[3]}'
+    new_date = f'2024-{month}-{start_date[0]} {start_date[2]}'
     date_isoformat = datetime.fromisoformat(new_date).isoformat()
     return date_isoformat
   
 def take_end_date():
-    end_date = input("¿En qué fecha y hora terminará el evento?")
+    asistent.talk("Fecha y hora de fin", "end.mp3")
+    end_date = asistent.listen()
     end_date = end_date.replace(' a las ', ' de ')
     end_date = end_date.replace(' del ', ' de ')
     end_date = end_date.split(' de ')
+    hour = end_date[2].strip()
+    day = end_date[0].strip()
+    if hour[0]!='0' and len(hour) <5:
+        hour= '0'+hour
+    if day[0]!='0' and len(day)<2:
+        day='0'+day
     for month in months:
         if end_date[1] in months:
             month = months[end_date[1]]
-    new_date = f'{end_date[2]}-{month}-{end_date[0]} {end_date[3]}'
+    new_date = f'2024-{month}-{end_date[0]} {end_date[0]}'
     date_isoformat = datetime.fromisoformat(new_date).isoformat()
     return date_isoformat
 
@@ -58,7 +76,7 @@ def create_event():
     start_date = take_start_date()
     end_date = take_end_date()
     service = calendar_setup.get_calendar_services()
-    event_result = service.events().insert(calendarId='primary',
+    service.events().insert(calendarId='primary',
         body={
             "summary": event_title,
             "description": event_desc,

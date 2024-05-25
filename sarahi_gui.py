@@ -34,7 +34,6 @@ comandos = """
 """
 
 name = "sarahí"
-listener = sr.Recognizer()
 
 main_window = Tk()
 main_window.title("Virtual Assistent")
@@ -562,6 +561,6 @@ button_ruleta.place(x=540, y=380, width=120, height=30)
 
 button_quit = Button(main_window, text="Salir", fg="white", bg="#E74C3C", 
                         font=("Arial", "10", "bold"), command=close)
-button_quit.place(x=740, y=380, width=100, height=30)
+button_quit.place(x=720, y=380, width=120, height=30)
 
 main_window.mainloop()
