@@ -10,7 +10,7 @@ import threading as tr
 import subprocess as sub
 import os
 
-name = "sarahí"
+name = "alexa"
 listener = sr.Recognizer()
 
 def talk(text, name):
@@ -85,7 +85,7 @@ programs={
     'archivos': 'explorer'
 }
 
-def run_sarahi():
+def run_assistent():
     while True:
         try:
             rec = listen()
@@ -147,4 +147,4 @@ def run_sarahi():
 
 if __name__ == '__main__':
     playsound("media/initiating.mp3")
-    run_sarahi()
+    run_assistent()
