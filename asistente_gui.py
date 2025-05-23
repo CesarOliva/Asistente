@@ -490,7 +490,7 @@ key_words = {
     'clima': clima,
 }
 
-def run_sarahi():
+def run_assistent():
     text = "Hola César, Bienvenido"
     filename = "initiating.mp3"
     talk(text, filename)
@@ -523,7 +523,7 @@ def run_sarahi():
     main_window.update()
 
 button_listen = Button(main_window, text="Escuchar", fg="white", bg="#5499C7",
-                       font=('Arial', '15', 'bold'), command=run_sarahi)
+                       font=('Arial', '15', 'bold'), command=run_assistent)
 button_listen.pack(pady=10)
 button_listen.configure(width=13, height=1)
 
