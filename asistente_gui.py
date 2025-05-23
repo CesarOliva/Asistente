@@ -33,7 +33,7 @@ comandos = """
             - Cierrate
 """
 
-name = "sarahí"
+name = "alexa"
 
 main_window = Tk()
 main_window.title("Virtual Assistent")
